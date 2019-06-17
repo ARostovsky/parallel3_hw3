@@ -2,12 +2,15 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import sun.misc.Unsafe
 
+const val MW_REGISTERS_COUNT = 50
+const val MW_THREADS_COUNT = 3
+
 
 /**
  * The bounded mutli-writer multi-reader implementation
  * see [https://en.wikipedia.org/wiki/Shared_snapshot_objects]
  */
-class MultiWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = REGISTERS_COUNT) {
+class MultiWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = MW_REGISTERS_COUNT) {
     private val handshakeBitMatrix = Array(registersCount) { Array(registersCount) { AtomicBoolean() } }
     private val registers = Array(registersCount) {
         AtomicReference(Register<T>(registersCount))

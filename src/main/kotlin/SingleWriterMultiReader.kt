@@ -1,14 +1,15 @@
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
-const val REGISTERS_COUNT = 50
+const val SW_REGISTERS_COUNT = 50
+const val SW_THREADS_COUNT = 3
 
 
 /**
  * The bounded single-writer multi-reader implementation
  * see [https://en.wikipedia.org/wiki/Shared_snapshot_objects]
  */
-class SingleWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = REGISTERS_COUNT) {
+class SingleWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = SW_REGISTERS_COUNT) {
     private val handshakeBitMatrix = Array(registersCount) { Array(registersCount) { AtomicBoolean() } }
     private val registers = Array(registersCount) {
         AtomicReference(Register<T>(registersCount))

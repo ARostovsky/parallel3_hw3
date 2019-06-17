@@ -9,7 +9,7 @@ import com.devexperts.dxlab.lincheck.strategy.stress.StressOptions
 import org.junit.Test
 
 
-@Param(name = "data", gen = IntGen::class, conf = "1:${REGISTERS_COUNT - 1}")
+@Param(name = "data", gen = IntGen::class, conf = "1:${SW_REGISTERS_COUNT - 1}")
 @OpGroupConfig(name = "singleWriter", nonParallel = true)
 @StressCTest
 class SingleWriterMultiReaderTest {
@@ -29,7 +29,7 @@ class SingleWriterMultiReaderTest {
     fun test() {
         val opts = StressOptions()
             .iterations(25)
-            .threads(3)
+            .threads(SW_THREADS_COUNT)
             .actorsPerThread(5)
             .logLevel(INFO)
 
