@@ -8,7 +8,7 @@ const val REGISTERS_COUNT = 50
  * The bounded single-writer multi-reader implementation
  * see [https://en.wikipedia.org/wiki/Shared_snapshot_objects]
  */
-public class SingleWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = REGISTERS_COUNT) {
+class SingleWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = REGISTERS_COUNT) {
     private val handshakeBitMatrix = Array(registersCount) { Array(registersCount) { AtomicBoolean() } }
     private val registers = Array(registersCount) {
         AtomicReference(Register<T>(registersCount))
@@ -18,7 +18,7 @@ public class SingleWriterMultiReader<T : Comparable<T>>(private val registersCou
      * Returns a consistent view of the memory.
      */
     fun scan(id: Int): Array<Data<T>?> {
-        val moved = IntArray(registersCount);
+        val moved = IntArray(registersCount)
 
         while (true) {
             /* Handshake */
@@ -63,7 +63,7 @@ public class SingleWriterMultiReader<T : Comparable<T>>(private val registersCou
      * invert the toggle bit and the embedded scan
      */
     fun update(id: Int, data: T) {
-        val newHandshakes = BooleanArray(registersCount);
+        val newHandshakes = BooleanArray(registersCount)
         for (i in 0 until registersCount) {
             newHandshakes[i] = !handshakeBitMatrix[i][id].get() /* Collect handshake values. */
         }
@@ -86,6 +86,6 @@ public class SingleWriterMultiReader<T : Comparable<T>>(private val registersCou
         val data: Data<T>? = null,
         val toogle: Boolean = false,
         val handshakeBits: BooleanArray = BooleanArray(registersCount),
-        val snapshot: Array<Data<T>?> = arrayOfNulls<Data<T>>(registersCount)
+        val snapshot: Array<Data<T>?> = arrayOfNulls(registersCount)
     )
 }

@@ -7,7 +7,7 @@ import sun.misc.Unsafe
  * The bounded mutli-writer multi-reader implementation
  * see [https://en.wikipedia.org/wiki/Shared_snapshot_objects]
  */
-public class MultiWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = REGISTERS_COUNT) {
+class MultiWriterMultiReader<T : Comparable<T>>(private val registersCount: Int = REGISTERS_COUNT) {
     private val handshakeBitMatrix = Array(registersCount) { Array(registersCount) { AtomicBoolean() } }
     private val registers = Array(registersCount) {
         AtomicReference(Register<T>(registersCount))
@@ -18,7 +18,7 @@ public class MultiWriterMultiReader<T : Comparable<T>>(private val registersCoun
      * Returns a consistent view of the memory.
      */
     fun scan(id: Int): Array<Data<T>?> {
-        val moved = IntArray(registersCount);
+        val moved = IntArray(registersCount)
         /* Handshake. */
         for (j in 0 until registersCount) {
             handshakeBitMatrix[id][j].getAndSet(registers[j].get().handshakeBits[id])
@@ -70,13 +70,13 @@ public class MultiWriterMultiReader<T : Comparable<T>>(private val registersCoun
      * invert the toggle bit and the embedded scan
      */
     fun update(id: Int, data: T) {
-        val newHandshakes = BooleanArray(registersCount);
+        val newHandshakes = BooleanArray(registersCount)
         /* Handshake. */
         registersRange.forEach { i ->
             newHandshakes[i] = !handshakeBitMatrix[i][id].get()
         }
 
-        val snapshot = scan(id);  /* Embedded scan: view is a single-writer register */
+        val snapshot = scan(id)  /* Embedded scan: view is a single-writer register */
         val obj = Data(data)
         val newRegister = Register(
             registersCount,
@@ -97,7 +97,7 @@ public class MultiWriterMultiReader<T : Comparable<T>>(private val registersCoun
         val id: Long = 0,
         val toogle: Boolean = false,
         val handshakeBits: BooleanArray = BooleanArray(registersCount),
-        val snapshot: Array<Data<T>?> = arrayOfNulls<Data<T>>(registersCount)
+        val snapshot: Array<Data<T>?> = arrayOfNulls(registersCount)
         )
 
     companion object {
@@ -113,7 +113,7 @@ public class MultiWriterMultiReader<T : Comparable<T>>(private val registersCoun
 
         fun getAddress(obj: Any): Long {
             val unsafe = getUnsafe()
-            val array = arrayOf<Any>(obj)
+            val array = arrayOf(obj)
             val baseOffset = unsafe.arrayBaseOffset(Array<Any>::class.java)
 
             return when (val addressSize = unsafe.addressSize()) {
