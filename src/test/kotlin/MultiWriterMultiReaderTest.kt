@@ -10,7 +10,6 @@ import org.junit.Test
 
 
 @Param(name = "data", gen = IntGen::class, conf = "1:${MW_REGISTERS_COUNT - 1}")
-@OpGroupConfig(name = "singleWriter", nonParallel = true)
 @StressCTest
 class MultiWriterMultiReaderTest {
     private val multiWriterMultiReader = MultiWriterMultiReader<Int>()
@@ -20,7 +19,7 @@ class MultiWriterMultiReaderTest {
         return multiWriterMultiReader.scan(id).map { it?.data }
     }
 
-    @Operation(params = ["data", "data"], group = "singleWriter")
+    @Operation(params = ["data", "data"])
     fun update(id: Int, data: Int) {
         return multiWriterMultiReader.update(id, data)
     }
@@ -28,9 +27,9 @@ class MultiWriterMultiReaderTest {
     @Test
     fun test() {
         val opts = StressOptions()
-            .iterations(5)
+            .iterations(25)
             .threads(MW_THREADS_COUNT)
-            .actorsPerThread(5)
+            .actorsPerThread(7)
             .logLevel(INFO)
 
         LinChecker.check(MultiWriterMultiReaderTest::class.java, opts)
