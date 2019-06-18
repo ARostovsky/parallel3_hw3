@@ -30,7 +30,7 @@ class SingleWriterMultiReaderTest {
         val opts = StressOptions()
             .iterations(25)
             .threads(SW_THREADS_COUNT)
-            .actorsPerThread(5)
+            .actorsPerThread(7)
             .logLevel(INFO)
 
         LinChecker.check(SingleWriterMultiReaderTest::class.java, opts)
